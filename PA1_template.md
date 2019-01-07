@@ -7,10 +7,11 @@ output:
 
 
 ## Loading and preprocessing the data
-```{r load, cache=TRUE, echo=TRUE}
+
+```r
 rm(list = ls())
 listfiles <- dir()
-if ("activity.csv" %in% listfiles){
+if ("activity.csf" %in% listfiles){
     actdf <- read.csv("activity.csv")
 }else{
     if ("activity.zip" %in% listfiles){
@@ -19,20 +20,12 @@ if ("activity.csv" %in% listfiles){
     }else{
         print("No files found!!!")
     }
-}ac
+}
 ```
 
 
 ## What is mean total number of steps taken per day?
-```{r hist, echo=TRUE}
-instpackages <- installed.packages()
-if (("ggplot2" %in% instpackages)){
-    library(ggplot2)
-}else{
-    install.packages("ggplot2")
-    library(ggplot2)
-}
-```
+
 
 
 ## What is the average daily activity pattern?
