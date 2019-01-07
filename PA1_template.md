@@ -9,14 +9,20 @@ output:
 ## Loading and preprocessing the data
 
 ```r
+wdir <- getwd()
+if (wdir != "E:/Luciano/R_WorkingDir/Reproducible Research/RepData_PeerAssessment1"){
+    setwd("E:/Luciano/R_WorkingDir/Reproducible Research/RepData_PeerAssessment1")
+}
 rm(list = ls())
 listfiles <- dir()
-if ("activity.csf" %in% listfiles){
+if ("activity.csv" %in% listfiles){
     actdf <- read.csv("activity.csv")
+    newdf <- na.omit(actdf)
 }else{
     if ("activity.zip" %in% listfiles){
         unzip(zipfile = "activity.zip")
         actdf <- read.csv("activity.csv") 
+        newdf <- na.omit(actdf)
     }else{
         print("No files found!!!")
     }
@@ -25,8 +31,34 @@ if ("activity.csf" %in% listfiles){
 
 
 ## What is mean total number of steps taken per day?
+- Update total steps per day.
+- Show histogram with totals steps per day.
+- Calculate mean and median of steps per day
 
+```r
+instpackages <- installed.packages()
+if (("ggplot2" %in% instpackages)){
+    library(ggplot2)
+}else{
+    install.packages("ggplot2")
+    library(ggplot2)
+}
+totaldays <- tapply(newdf$steps, newdf$date, FUN = sum)
+hist(totaldays, main = "Histogram of the total number of steps", 
+     xlab = "Total number of steps taken each day", 
+     col = "grey", border = "green")
+meansteps <- mean(totaldays, na.rm = TRUE)
+mediansteps <- median(totaldays, na.rm = TRUE)
+abline(v = meansteps, col = "royalblue", lwd = 2)
+abline(v = mediansteps, col = "red", lwd = 2)
+legend("topright", c("- Median", "- Mean"), fill = c("royalblue", "red"))
+box()
+```
 
+![](PA1_template_files/figure-html/hist-1.png)<!-- -->
+
+- **Mean: ** 1.0766189\times 10^{4}
+- **Median: ** 10765
 
 ## What is the average daily activity pattern?
 
