@@ -57,11 +57,58 @@ box()
 - **Median: ** `r mediansteps`
 
 ## What is the average daily activity pattern?
+- Calcluate mean value of steps for every interval.
+- Detect 5-minutes interval with maximum number of steps
+```{r intervalsteps, echo=TRUE}
+intersteps <- with(newdf, aggregate(steps ~ interval, newdf, mean))
+plot(x = intersteps$interval, y = intersteps$steps, type = "l"
+     , col = "blue", main = "Average daily activity pattern",
+     xlab = "Interval", ylab = "Average number of steps")
+maxinterval <- intersteps[which.max(intersteps$steps),]$interval
 
-
+```
+- Interval with maximum number of steps: **`r maxinterval`**
 
 ## Imputing missing values
+- Calculate the complete cases with no NA's
+- Eliminate steps with NA and substitute by mean value in the same interval
+- Create a new data set without NA's
+ 
+```{r missing, echo=TRUE}
+totalincomplete <- sum(is.na(actdf$steps)) 
+newactdf <- actdf
+for (i in 1:nrow(newactdf)) {
+    if (is.na(newactdf$steps[i])){
+        interval <- newactdf$interval[i]
+        stepsmean <- intersteps$steps[intersteps$interval == interval]
+        newactdf$steps[i] <- stepsmean
+    }
+}
+newtotaldays <- tapply(newactdf$steps, newactdf$date, FUN = sum)
+hist(newtotaldays, main = "Histogram of the total number of steps", 
+     xlab = "Total number of steps taken each day", 
+     col = "grey", border = "green")
+newmeansteps <- mean(newtotaldays, na.rm = TRUE)
+newmediansteps <- median(newtotaldays, na.rm = TRUE)
+abline(v = newmeansteps, col = "royalblue", lwd = 2)
+abline(v = newmediansteps, col = "red", lwd = 2)
+legend("topright", c("- Median", "- Mean"), fill = c("royalblue", "red"))
+box()
+diffmean <- (newmeansteps - meansteps)
+diffmedian <- (newmediansteps - mediansteps)
+```
 
-
+- Total NA's in the initial dataset: **`r totalincomplete`**
+- **Mean: ** `r newmeansteps` before `r meansteps`
+    - Difference in the mean is: `r diffmean`
+- **Median: ** `r newmediansteps` before `r mediansteps`
+    - Difference in the medain is: `r diffmedian`
 
 ## Are there differences in activity patterns between weekdays and weekends?
+- Create a factor to separeate weekdays and weekends
+```{r weekdata, echo=TRUE}
+wend <- c("Saturday", "Sunday")
+newactdf$weekend <- factor((weekdays(as.Date(newactdf$date)) %in% wend), 
+                           levels = c(FALSE, TRUE), labels = c("weekday", "weekend"))
+
+```
