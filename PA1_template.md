@@ -36,13 +36,13 @@ if ("activity.csv" %in% listfiles){
 - Calculate mean and median of steps per day
 
 ```r
-instpackages <- installed.packages()
-if (("ggplot2" %in% instpackages)){
-    library(ggplot2)
-}else{
-    install.packages("ggplot2")
-    library(ggplot2)
-}
+# instpackages <- installed.packages()
+# if (("ggplot2" %in% instpackages)){
+#     library(ggplot2)
+# }else{
+#     install.packages("ggplot2")
+#     library(ggplot2)
+# }
 totaldays <- tapply(newdf$steps, newdf$date, FUN = sum)
 hist(totaldays, main = "Histogram of the total number of steps", 
      xlab = "Total number of steps taken each day", 
@@ -117,7 +117,7 @@ diffmedian <- (newmediansteps - mediansteps)
 - **Mean: ** 1.0766189\times 10^{4} before 1.0766189\times 10^{4}
     - Difference in the mean is: 0
 - **Median: ** 1.0766189\times 10^{4} before 10765
-    - Difference in the medain is: 1.1886792
+    - Difference in the median is: 1.1886792
 
 ## Are there differences in activity patterns between weekdays and weekends?
 - Create a factor to separeate weekdays and weekends
@@ -126,4 +126,15 @@ diffmedian <- (newmediansteps - mediansteps)
 wend <- c("Saturday", "Sunday")
 newactdf$weekend <- factor((weekdays(as.Date(newactdf$date)) %in% wend), 
                            levels = c(FALSE, TRUE), labels = c("weekday", "weekend"))
+wenddata <- newactdf[newactdf$weekend == "weekend",]
+wdaydata <- newactdf[newactdf$weekend == "weekday",]
+newwendsteps <- with(wenddata, aggregate(steps ~ interval, wenddata, mean))
+newwdaysteps <- with(wdaydata, aggregate(steps ~ interval, wdaydata, mean))
+par(mfrow = c(1,2))
+plot(newwendsteps, main = "Weekend",type = "l", col = "blue")
+plot(newwdaysteps, main = "Weekday", type = "l", col = "red")
 ```
+
+![](PA1_template_files/figure-html/weekdata-1.png)<!-- -->
+
+- On weekend people have more free time and can perform activity with higher intervals
