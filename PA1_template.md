@@ -136,5 +136,4 @@ plot(newwdaysteps, main = "Weekday", type = "l", col = "red")
 ```
 
 ![](PA1_template_files/figure-html/weekdata-1.png)<!-- -->
-
 - On weekend people have more free time and can perform activity with higher intervals
